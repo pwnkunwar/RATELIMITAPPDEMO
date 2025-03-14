@@ -31,5 +31,13 @@ namespace RATELIMITAPPDEMO.Controllers
             })
             .ToArray();
         }
+        [HttpGet]
+        [Route("GetName")]
+        [EnableRateLimiting("SlidingWindowPolicy")]
+
+        public IActionResult GetName()
+        {
+            return Ok("Hello");
+        }
     }
 }

@@ -30,6 +30,15 @@ builder.Services.AddRateLimiter(options =>
         opt.SegmentsPerWindow = 3;
     }).RejectionStatusCode = 429; //Too Many Requests
 });
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddConcurrencyLimiter("ConuencyPolicy", opt =>
+    {
+        opt.QueueLimit = 5;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    }).RejectionStatusCode = 429; //Too Many Requests
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

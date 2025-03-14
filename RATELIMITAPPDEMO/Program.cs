@@ -33,10 +33,24 @@ builder.Services.AddRateLimiter(options =>
 
 builder.Services.AddRateLimiter(options =>
 {
-    options.AddConcurrencyLimiter("ConuencyPolicy", opt =>
+    options.AddConcurrencyLimiter("ConcurrencyPolicy", opt =>
     {
+        opt.PermitLimit = 1;
         opt.QueueLimit = 5;
         opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    }).RejectionStatusCode = 429; //Too Many Requests
+});
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddTokenBucketLimiter("TokenBucketPolicy", opt =>
+    {
+        opt.TokenLimit = 5;
+        opt.QueueLimit = 5;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        opt.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
+        opt.TokensPerPeriod = 5;
+        opt.AutoReplenishment = true;
     }).RejectionStatusCode = 429; //Too Many Requests
 });
 var app = builder.Build();

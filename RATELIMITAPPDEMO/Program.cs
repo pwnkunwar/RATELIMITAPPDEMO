@@ -13,11 +13,14 @@ builder.Services.AddRateLimiter(options =>
 {
     options.AddFixedWindowLimiter("FixedWindowPolicy", opt =>
     {
-        opt.Window = TimeSpan.FromSeconds(5);
+        opt.Window = TimeSpan.FromSeconds(10);
         opt.PermitLimit = 5;
-        opt.QueueLimit = 10;
-    });
+        opt.QueueLimit = 5;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    }).RejectionStatusCode = 429; //Too Many Requests
 });
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +30,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRateLimiter();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
